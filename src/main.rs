@@ -1,4 +1,3 @@
-mod schema;
 fn main() {
     let mut page = 0;
     let agent = ureq::AgentBuilder::new().build();
@@ -6,7 +5,12 @@ fn main() {
     let file = std::fs::File::create("results.json").expect("Failed to open json file!");
     loop {
         let req = match agent
-            .get("https://mee6.xyz/api/plugins/levels/leaderboard/302094807046684672")
+            .get(&format!(
+                "https://mee6.xyz/api/plugins/levels/leaderboard/{}",
+                std::env::args()
+                    .nth(1)
+                    .unwrap_or("302094807046684672".to_string())
+            ))
             .query("page", &page.to_string())
             .call()
         {
@@ -16,8 +20,7 @@ fn main() {
                 break;
             }
         };
-        // println!("{}", req.into_string().unwrap());
-        let data = match req.into_json::<schema::Root>() {
+        let data = match req.into_json::<Root>() {
             Ok(val) => val,
             Err(e) => {
                 println!("Error deserializing: {e:?}");
@@ -48,4 +51,18 @@ struct User {
     msgs: i64,
     xp: i64,
     level: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde::Deserialize)]
+pub struct Root {
+    pub page: i64,
+    pub players: Vec<Player>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde::Deserialize)]
+pub struct Player {
+    pub id: String,
+    pub level: i64,
+    pub message_count: i64,
+    pub xp: i64,
 }
