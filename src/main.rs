@@ -1,8 +1,12 @@
 fn main() {
-    let mut page = 0;
     let agent = ureq::AgentBuilder::new().build();
-    let mut users: Vec<User> = Vec::with_capacity(10_000);
-    let file = std::fs::File::create("results.json").expect("Failed to open json file!");
+    let mut page = 0;
+    let mut users: Vec<User> = Vec::new();
+    let file = std::fs::OpenOptions::new()
+        .create(true)
+        .write(true)
+        .open("results.json")
+        .expect("Failed to open results.json!");
     loop {
         let req = match agent
             .get(&format!(
@@ -27,6 +31,7 @@ fn main() {
                 break;
             }
         };
+        let last = data.players[data.players.len() - 1].clone();
         for user in data.players {
             users.push(User {
                 id: user.id,
@@ -35,17 +40,17 @@ fn main() {
                 level: user.level,
             });
         }
-        if page >= 100 {
+        if last.level < 5 {
             break;
         }
-        println!("Fetched page {} out of 100", page);
         page += 1;
-        std::thread::sleep(std::time::Duration::from_secs_f32(1.2))
+        println!("Current user level: {}", last.level);
+        std::thread::sleep(std::time::Duration::from_secs(1))
     }
     serde_json::to_writer_pretty(file, &users).expect("Failed to serialize users as json!");
 }
 
-#[derive(serde::Serialize)]
+#[derive(Default, Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 struct User {
     id: String,
     msgs: i64,
