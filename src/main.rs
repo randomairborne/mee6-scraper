@@ -1,3 +1,6 @@
+use std::io::Write;
+
+
 fn main() {
     let agent = ureq::AgentBuilder::new().build();
     let mut page = 0;
@@ -44,8 +47,9 @@ fn main() {
             break;
         }
         page += 1;
-        println!("Current user level: {}", last.level);
-        std::thread::sleep(std::time::Duration::from_secs(1))
+        print!("\rCurrent user level: {} ({} total users) ", last.level, users.len());
+        std::io::stdout().flush().ok();
+        std::thread::sleep(std::time::Duration::from_secs(1));
     }
     serde_json::to_writer_pretty(file, &users).expect("Failed to serialize users as json!");
 }
