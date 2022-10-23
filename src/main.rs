@@ -51,6 +51,7 @@ fn main() {
         std::io::stdout().flush().ok();
         std::thread::sleep(std::time::Duration::from_secs(1));
     }
+    println!("");
     serde_json::to_writer_pretty(file, &users).expect("Failed to serialize users as json!");
 }
 
