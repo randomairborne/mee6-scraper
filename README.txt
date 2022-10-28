@@ -1,7 +1,7 @@
 MEE6 website scraper
 ------------------
+Written in go
 
 Run with the ID of the server you want to scrape:
-./scrape.py 302094807046684672
+go run . 302094807046684672
 
-Output is in the sql file

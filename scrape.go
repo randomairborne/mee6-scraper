@@ -16,7 +16,7 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	if len(os.Args) != 2 {
-		fmt.Println("This program takes exactly one argument")
+		fmt.Println("This program takes exactly one argument, the ID of the server you want to scrape!")
 		os.Exit(1)
 	}
 	guildId := os.Args[1]
