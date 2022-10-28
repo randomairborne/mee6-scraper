@@ -10,11 +10,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run go
-        run: go run 302094807046684672
+        run: go run . 302094807046684672
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: scrape.json
-          path: ./scrape.json
+          path: ./302094807046684672-levels.json
 
