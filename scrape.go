@@ -19,9 +19,13 @@ func main() {
 		fmt.Println("This program takes exactly one argument, the ID of the server you want to scrape!")
 		os.Exit(1)
 	}
-	guildId := os.Args[1]
-	joutName := fmt.Sprintf("./%s-levels.json", guildId)
-	soutName := fmt.Sprintf("./%s-levels.sql", guildId)
+	guildId, err := strconv.ParseUint(os.Args[1], 10, 64)
+	if err != nil {
+		fmt.Println("Server ID must be an int!")
+		os.Exit(1)
+	}
+	joutName := fmt.Sprintf("./%d-levels.json", guildId)
+	soutName := fmt.Sprintf("./%d-levels.sql", guildId)
 	jout, err := os.OpenFile(joutName, os.O_CREATE|os.O_WRONLY, 0644)
 	report(err)
 	sout, err := os.OpenFile(soutName, os.O_CREATE|os.O_WRONLY, 0644)
@@ -36,7 +40,7 @@ func main() {
 	}()
 	for keepGoing {
 		thisPage := new(InputData)
-		resp, err := http.Get(fmt.Sprintf("https://mee6.xyz/api/plugins/levels/leaderboard/%s?page=%d", guildId, page))
+		resp, err := http.Get(fmt.Sprintf("https://mee6.xyz/api/plugins/levels/leaderboard/%d?page=%d", guildId, page))
 		if err != nil {
 			fmt.Printf("Error fetching page %d: %s", page, err.Error())
 			break
@@ -54,7 +58,7 @@ func main() {
 				fmt.Printf("Error converting %s to int: %s", player.ID, err.Error())
 				break
 			}
-			sout.WriteString(fmt.Sprintf("INSERT INTO levels (id, xp) VALUES (%d, %d);\n", id, player.Xp))
+			sout.WriteString(fmt.Sprintf("INSERT INTO levels (id, xp, guild) VALUES (%d, %d, %d);\n", id, player.Xp, guildId))
 			users = append(users, player)
 			fmt.Printf("\r Current user level: %d (%d total users)", player.Level, len(users))
 		}
