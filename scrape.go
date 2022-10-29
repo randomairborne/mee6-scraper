@@ -36,18 +36,24 @@ func main() {
 	}()
 	for keepGoing {
 		thisPage := new(InputData)
-		report(err)
 		resp, err := http.Get(fmt.Sprintf("https://mee6.xyz/api/plugins/levels/leaderboard/%s?page=%d", guildId, page))
-		report(err)
+		if err != nil {
+			fmt.Printf("Error fetching page %d: %s", page, err.Error())
+			break
+		}
 		defer resp.Body.Close()
 		body, err := io.ReadAll(resp.Body)
 		err = json.Unmarshal(body, &thisPage)
 		if err != nil {
 			fmt.Printf("Error: %s with response: %s", err.Error(), body)
+			break
 		}
 		for _, player := range thisPage.Players {
 			id, err := strconv.ParseUint(player.ID, 10, 64)
-			report(err)
+			if err != nil {
+				fmt.Printf("Error converting %s to int: %s", player.ID, err.Error())
+				break
+			}
 			sout.WriteString(fmt.Sprintf("INSERT INTO levels (id, xp) VALUES (%d, %d);\n", id, player.Xp))
 			users = append(users, player)
 			fmt.Printf("\r Current user level: %d (%d total users)", player.Level, len(users))
