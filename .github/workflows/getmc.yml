@@ -12,13 +12,13 @@ jobs:
 
       - name: Get date
         id: date
-        run: echo "::set-output date=$(date +'%Y-%m-%dT%H:%M')"
+        run: echo "NOW::date=$(date +'%Y-%m-%dT%H:%M')" >> $GITHUB_ENV
 
       - name: Create tag
         uses: rickstaa/action-create-tag@v1
         with:
-          tag: snapshot-${{ steps.date.outputs.date }}
-          message: level archive for ${{ steps.date.outputs.date }}
+          tag: snapshot-$NOW
+          message: level archive for $NOW
 
       - name: Run go
         run: go run . 302094807046684672
@@ -26,8 +26,8 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          name: Snapshot ${{ steps.date.outputs.date }}
-          tag_name: snapshot-${{ steps.date.outputs.date }}
+          name: Snapshot $NOW
+          tag_name: snapshot-$NOW
           files: |
             302094807046684672-levels.json
             302094807046684672-levels.sql
