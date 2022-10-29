@@ -13,9 +13,14 @@ jobs:
       - name: Run go
         run: go run . 302094807046684672
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: scrape.json
-          path: ./302094807046684672-levels.json
+      - name: Get date
+        id: date
+        run: echo "::set-output date=$(date +'%Y-%m-%dT%H:%M')"
 
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Snapshot ${{ steps.date.outputs.date }}
+          files: |
+          302094807046684672-levels.json
+          302094807046684672-levels.sql
