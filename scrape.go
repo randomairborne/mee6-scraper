@@ -83,6 +83,9 @@ func main() {
 	err = sout.Close()
 	report(err)
 	fmt.Printf("Done! Data written to %s, SQL queries written to %s\n", joutName, soutName)
+	if !keepGoing {
+		os.Exit(1)
+	}
 }
 
 func report(e error) {
