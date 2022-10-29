@@ -22,5 +22,5 @@ jobs:
         with:
           name: Snapshot ${{ steps.date.outputs.date }}
           files: |
-          302094807046684672-levels.json
-          302094807046684672-levels.sql
+            302094807046684672-levels.json
+            302094807046684672-levels.sql
