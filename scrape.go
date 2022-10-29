@@ -33,6 +33,7 @@ func main() {
 	page := 0
 	users := make([]Player, 0)
 	keepGoing := true
+	hadError := false
 	go func() {
 		<-c
 		fmt.Println("\nExiting...")
@@ -42,20 +43,23 @@ func main() {
 		thisPage := new(InputData)
 		resp, err := http.Get(fmt.Sprintf("https://mee6.xyz/api/plugins/levels/leaderboard/%d?page=%d", guildId, page))
 		if err != nil {
-			fmt.Printf("Error fetching page %d: %s", page, err.Error())
+			fmt.Printf("\nError fetching page %d: %s\n", page, err.Error())
+			hadError = true
 			break
 		}
 		defer resp.Body.Close()
 		body, err := io.ReadAll(resp.Body)
 		err = json.Unmarshal(body, &thisPage)
 		if err != nil {
-			fmt.Printf("Error: %s with response: %s", err.Error(), body)
+			fmt.Printf("\nError: %s with response: %s\n", err.Error(), body)
+			hadError = true
 			break
 		}
 		for _, player := range thisPage.Players {
 			id, err := strconv.ParseUint(player.ID, 10, 64)
 			if err != nil {
-				fmt.Printf("Error converting %s to int: %s", player.ID, err.Error())
+				fmt.Printf("\nError converting %s to int: %s\n", player.ID, err.Error())
+				hadError = true
 				break
 			}
 			sout.WriteString(fmt.Sprintf("INSERT INTO levels (id, xp, guild) VALUES (%d, %d, %d);\n", id, player.Xp, guildId))
@@ -83,7 +87,7 @@ func main() {
 	err = sout.Close()
 	report(err)
 	fmt.Printf("Done! Data written to %s, SQL queries written to %s\n", joutName, soutName)
-	if !keepGoing {
+	if hadError {
 		os.Exit(1)
 	}
 }
