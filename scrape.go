@@ -42,7 +42,9 @@ func main() {
 		defer resp.Body.Close()
 		body, err := io.ReadAll(resp.Body)
 		err = json.Unmarshal(body, &thisPage)
-		report(err)
+		if err != nil {
+			fmt.Printf("Error: %s with response: %s", err.Error(), body)
+		}
 		for _, player := range thisPage.Players {
 			id, err := strconv.ParseUint(player.ID, 10, 64)
 			report(err)
