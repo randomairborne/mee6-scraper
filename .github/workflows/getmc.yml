@@ -27,6 +27,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: Snapshot ${{ steps.date.outputs.date }}
+          tag_name: snapshot-${{ steps.date.outputs.date }}
           files: |
             302094807046684672-levels.json
             302094807046684672-levels.sql
