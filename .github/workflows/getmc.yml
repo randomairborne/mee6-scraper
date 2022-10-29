@@ -17,6 +17,12 @@ jobs:
         id: date
         run: echo "::set-output date=$(date +'%Y-%m-%dT%H:%M')"
 
+      - name: Create tag
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: snapshot-${{ steps.date.outputs.date }}
+          message: level archive for ${{ steps.date.outputs.date }}
+
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
