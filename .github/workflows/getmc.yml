@@ -10,9 +10,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Run go
-        run: go run . 302094807046684672
-
       - name: Get date
         id: date
         run: echo "::set-output date=$(date +'%Y-%m-%dT%H:%M')"
@@ -22,6 +19,9 @@ jobs:
         with:
           tag: snapshot-${{ steps.date.outputs.date }}
           message: level archive for ${{ steps.date.outputs.date }}
+
+      - name: Run go
+        run: go run . 302094807046684672
 
       - name: Create release
         uses: softprops/action-gh-release@v1
