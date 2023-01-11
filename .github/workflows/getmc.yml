@@ -23,11 +23,8 @@ jobs:
       - name: Run go
         run: go run . 302094807046684672
 
-      - name: Create release
-        uses: softprops/action-gh-release@v1
+      - name: Upload json
+        uses: actions/upload-artifact@v3
         with:
-          name: Snapshot ${{ env.NOW }}
-          tag_name: snapshot-${{ env.NOW }}
-          files: |
-            302094807046684672-levels.json
-            302094807046684672-levels.sql
+          name: data
+          path: 302094807046684672-levels.json

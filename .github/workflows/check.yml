@@ -13,19 +13,21 @@ jobs:
 
       - name: Build linux
         run: go build .
-        
+
       - name: Build windows
         run: go build .
-        env: 
+        env:
           GOOS: windows
           GOARCH: 386
-        
+
       - name: Upload linux
         uses: actions/upload-artifact@v3
         with:
+          name: mee6-scraper-linux
           path: mee6-scraper
-          
+
       - name: Upload windows
         uses: actions/upload-artifact@v3
         with:
-          path: mee6-scraper
+          name: mee6-scraper-windows
+          path: mee6-scraper.exe

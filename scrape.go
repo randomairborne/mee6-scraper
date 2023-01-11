@@ -25,13 +25,10 @@ func main() {
 		os.Exit(1)
 	}
 	joutName := fmt.Sprintf("./%d-levels.json", guildId)
-	soutName := fmt.Sprintf("./%d-levels.sql", guildId)
 	jout, err := os.OpenFile(joutName, os.O_CREATE|os.O_WRONLY, 0644)
 	report(err)
-	sout, err := os.OpenFile(soutName, os.O_CREATE|os.O_WRONLY, 0644)
-	report(err)
 	page := 0
-	users := make([]Player, 0)
+	users := make([]IntPlayer, 0)
 	keepGoing := true
 	hadError := false
 	go func() {
@@ -43,12 +40,27 @@ func main() {
 		thisPage := new(InputData)
 		resp, err := http.Get(fmt.Sprintf("https://mee6.xyz/api/plugins/levels/leaderboard/%d?page=%d", guildId, page))
 		if err != nil {
+			if resp.StatusCode == 429 {
+				dur, err := strconv.Atoi(resp.Header.Get("Retry-After"))
+				if err != nil {
+					fmt.Printf("\nError: %s\n", err.Error())
+					hadError = true
+					break
+				}
+				time.Sleep(time.Duration(dur+1) * time.Second)
+				continue
+			}
 			fmt.Printf("\nError fetching page %d: %s\n", page, err.Error())
 			hadError = true
 			break
 		}
 		defer resp.Body.Close()
 		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Printf("\nError: %s with response: %s\n", err.Error(), body)
+			hadError = true
+			break
+		}
 		err = json.Unmarshal(body, &thisPage)
 		if err != nil {
 			fmt.Printf("\nError: %s with response: %s\n", err.Error(), body)
@@ -57,13 +69,13 @@ func main() {
 		}
 		for _, player := range thisPage.Players {
 			id, err := strconv.ParseUint(player.ID, 10, 64)
+			intPlayer := IntPlayer{ID: id, Level: player.Level, Xp: player.Xp}
 			if err != nil {
 				fmt.Printf("\nError converting %s to int: %s\n", player.ID, err.Error())
 				hadError = true
 				break
 			}
-			sout.WriteString(fmt.Sprintf("INSERT INTO levels (id, xp, guild) VALUES (%d, %d, %d);\n", id, player.Xp, guildId))
-			users = append(users, player)
+			users = append(users, intPlayer)
 			fmt.Printf("\r Current user level: %d (%d total users)", player.Level, len(users))
 		}
 		if thisPage.Players[len(thisPage.Players)-1].Level < 5 {
@@ -80,13 +92,9 @@ func main() {
 	report(err)
 	err = jout.Sync()
 	report(err)
-	err = sout.Sync()
-	report(err)
 	err = jout.Close()
 	report(err)
-	err = sout.Close()
-	report(err)
-	fmt.Printf("Done! Data written to %s, SQL queries written to %s\n", joutName, soutName)
+	fmt.Printf("Done! Data written to %s\n", joutName)
 	if hadError {
 		os.Exit(1)
 	}
@@ -105,6 +113,12 @@ type InputData struct {
 
 type Player struct {
 	ID    string `json:"id"`
+	Level uint64 `json:"level"`
+	Xp    uint64 `json:"xp"`
+}
+
+type IntPlayer struct {
+	ID    uint64 `json:"id"`
 	Level uint64 `json:"level"`
 	Xp    uint64 `json:"xp"`
 }
