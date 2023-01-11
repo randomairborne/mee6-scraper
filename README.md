@@ -1,7 +1,7 @@
 # MEE6 website scraper
 
 Written in go
-Download from [releases](https://github.com/randomairborne/mee6-scraper/releases)
+Download from [releases](https://github.com/randomairborne/mee6-scraper/releases) \
 Run with the ID of the server you want to scrape:
 
 ```bash
