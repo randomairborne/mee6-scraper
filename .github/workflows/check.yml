@@ -20,10 +20,12 @@ jobs:
           GOOS: windows
           GOARCH: 386
         
-      - name: Upload artifacts
+      - name: Upload linux
         uses: actions/upload-artifact@v3
         with:
-          name: executables
-          path: |
-            mee6-scraper
-            mee6-scraper.exe
+          path: mee6-scraper
+          
+      - name: Upload windows
+        uses: actions/upload-artifact@v3
+        with:
+          path: mee6-scraper
