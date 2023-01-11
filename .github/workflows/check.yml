@@ -11,8 +11,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build go
+      - name: Build linux
         run: go build .
+        
+      - name: Build windows
+        run: go build .
+        env: 
+          GOOS: windows
+          GOARCH: 386
+        
+      - name: Upload artefacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: executables
+          path: |
+            mee6-scraper
+            mee6-scraper.exe
+      
+  release:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: executables
       
       - name: Create release
         uses: softprops/action-gh-release@v1
@@ -20,4 +43,5 @@ jobs:
           name: Release ${{ github.ref_name }}
           tag_name: Release-${{ github.ref_name }}-${{ env.NOW }}
           files: |
-            scrape
+            mee6-scraper
+            mee6-scraper.exe
