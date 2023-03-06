@@ -12,13 +12,7 @@ jobs:
 
       - name: Get date
         id: date
-        run: echo "NOW=$(date +'%Y-%m-%dT%Hh%Mm')" >> $GITHUB_ENV
-
-      - name: Create tag
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: snapshot-${{ env.NOW }}
-          message: level archive for ${{ env.NOW }}
+        run: echo "NOW=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Run go
         run: go run . 302094807046684672
@@ -28,3 +22,9 @@ jobs:
         with:
           name: data
           path: 302094807046684672-levels.json
+
+      - name: Release to R2
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          command: r2 bucket put ${{ secrets.CF_R2_ENDPOINT }}/${{ env.NOW }}-levels.json --file ./302094807046684672-levels.json
