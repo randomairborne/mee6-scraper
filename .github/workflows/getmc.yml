@@ -23,6 +23,16 @@ jobs:
       - name: Run go
         run: go run . 302094807046684672
 
+      - name: Upload to ValkCDN
+        uses: randomairborne/r2-release@main
+        with:
+          endpoint: ${{ secrets.CF_R2_ENDPOINT }}
+          accesskeyid: ${{ secrets.R2_ACCESS_KEY_ID }}
+          secretaccesskey: ${{ secrets.CF_API_TOKEN }}
+          bucket: 'valkyrie-download-store'
+          file: './302094807046684672-levels.json'
+          destination: 'minecraft-discord-levels.json'
+
       - name: Upload json
         uses: actions/upload-artifact@v3
         with:
