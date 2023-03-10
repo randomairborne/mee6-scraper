@@ -12,13 +12,7 @@ jobs:
 
       - name: Get date
         id: date
-        run: echo "NOW=$(date +'%Y-%m-%dT%Hh%Mm')" >> $GITHUB_ENV
-
-      - name: Create tag
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: snapshot-${{ env.NOW }}
-          message: level archive for ${{ env.NOW }}
+        run: echo "NOW=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Run go
         run: go run . 302094807046684672
@@ -31,7 +25,17 @@ jobs:
           secretaccesskey: ${{ secrets.CF_API_TOKEN }}
           bucket: 'valkyrie-download-store'
           file: './302094807046684672-levels.json'
-          destination: '/minecraft-discord-levels.json'
+          destination: '/mc-discord-archive/minecraft-discord-levels-${{ env.NOW }}.json'
+
+      - name: Upload to ValkCDN
+        uses: randomairborne/r2-release@main
+        with:
+          endpoint: ${{ secrets.CF_R2_ENDPOINT }}
+          accesskeyid: ${{ secrets.R2_ACCESS_KEY_ID }}
+          secretaccesskey: ${{ secrets.CF_API_TOKEN }}
+          bucket: 'valkyrie-download-store'
+          file: './302094807046684672-levels.json'
+          destination: '/mc-discord-archive/minecraft-discord-levels.json'
 
       - name: Upload json
         uses: actions/upload-artifact@v3
