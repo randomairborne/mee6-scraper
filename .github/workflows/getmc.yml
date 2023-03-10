@@ -31,7 +31,7 @@ jobs:
           secretaccesskey: ${{ secrets.CF_API_TOKEN }}
           bucket: 'valkyrie-download-store'
           file: './302094807046684672-levels.json'
-          destination: 'minecraft-discord-levels.json'
+          destination: '/minecraft-discord-levels.json'
 
       - name: Upload json
         uses: actions/upload-artifact@v3
