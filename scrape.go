@@ -76,11 +76,13 @@ func main() {
 				break
 			}
 			users = append(users, intPlayer)
-			fmt.Printf("\r Current user level: %d (%d total users)", player.Level, len(users))
 		}
-		if thisPage.Players[len(thisPage.Players)-1].Level < 5 {
+		finalLevel := thisPage.Players[len(thisPage.Players)-1].Level
+		if finalLevel < 5 {
 			break
 		}
+		fmt.Printf("\r Current user level: %d (%d total users)", finalLevel, len(users))
+
 		page = page + 1
 		time.Sleep(1 * time.Second)
 
