@@ -25,7 +25,7 @@ jobs:
           secretaccesskey: ${{ secrets.CF_API_TOKEN }}
           bucket: 'valkyrie-download-store'
           file: './302094807046684672-levels.json'
-          destination: '/mc-discord-archive/mc-discord-${{ env.NOW }}.json'
+          destination: 'mc-discord-archive/mc-discord-${{ env.NOW }}.json'
 
       - name: Upload to ValkCDN
         uses: randomairborne/r2-release@main
@@ -35,7 +35,7 @@ jobs:
           secretaccesskey: ${{ secrets.CF_API_TOKEN }}
           bucket: 'valkyrie-download-store'
           file: './302094807046684672-levels.json'
-          destination: '/mc-discord-archive/latest.json'
+          destination: 'mc-discord-archive/latest.json'
 
       - name: Upload json
         uses: actions/upload-artifact@v3
