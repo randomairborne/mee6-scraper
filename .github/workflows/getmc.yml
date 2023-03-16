@@ -38,6 +38,7 @@ jobs:
           destination: 'mc-discord-archive/latest.json'
 
       - name: Upload json
+        if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: data
