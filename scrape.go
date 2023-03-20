@@ -69,7 +69,7 @@ func main() {
 		}
 		for _, player := range thisPage.Players {
 			id, err := strconv.ParseUint(player.ID, 10, 64)
-			intPlayer := IntPlayer{ID: id, Level: player.Level, Xp: player.Xp, Discriminator: player.Discriminator, Username: player.Username}
+			intPlayer := IntPlayer{ID: id, Level: player.Level, Xp: player.Xp, Discriminator: player.Discriminator, Username: player.Username, Avatar: player.Avatar}
 			if err != nil {
 				fmt.Printf("\nError converting %s to int: %s\n", player.ID, err.Error())
 				hadError = true
@@ -119,6 +119,7 @@ type Player struct {
 	Xp            uint64 `json:"xp"`
 	Username      string `json:"username"`
 	Discriminator string `json:"discriminator"`
+        Avatar        string `json:"avatar,omitempty"`
 }
 
 type IntPlayer struct {
@@ -127,4 +128,5 @@ type IntPlayer struct {
 	Xp            uint64 `json:"xp"`
 	Username      string `json:"username"`
 	Discriminator string `json:"discriminator"`
+        Avatar        string `json:"avatar,omitempty"`
 }
