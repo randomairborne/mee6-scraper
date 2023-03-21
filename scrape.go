@@ -15,11 +15,16 @@ import (
 func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-	if len(os.Args) != 2 {
-		fmt.Println("This program takes exactly one argument, the ID of the server you want to scrape!")
+	if len(os.Args) != 3 {
+		fmt.Println("This program takes exactly two arguments, the ID of the server you want to scrape, and the level you want to scrape until!")
 		os.Exit(1)
 	}
 	guildId, err := strconv.ParseUint(os.Args[1], 10, 64)
+	if err != nil {
+		fmt.Println("Server ID must be an int!")
+		os.Exit(1)
+	}
+	levelToScrapeUntil, err := strconv.ParseUint(os.Args[2], 10, 64)
 	if err != nil {
 		fmt.Println("Server ID must be an int!")
 		os.Exit(1)
@@ -67,6 +72,9 @@ func main() {
 			hadError = true
 			break
 		}
+		if len(thisPage.Players) == 0 {
+			break
+		}
 		for _, player := range thisPage.Players {
 			id, err := strconv.ParseUint(player.ID, 10, 64)
 			intPlayer := IntPlayer{ID: id, Level: player.Level, Xp: player.Xp, Discriminator: player.Discriminator, Username: player.Username, Avatar: player.Avatar}
@@ -78,7 +86,7 @@ func main() {
 			users = append(users, intPlayer)
 		}
 		finalLevel := thisPage.Players[len(thisPage.Players)-1].Level
-		if finalLevel < 5 {
+		if finalLevel < levelToScrapeUntil {
 			break
 		}
 		fmt.Printf("\r Current user level: %d (%d total users)", finalLevel, len(users))
