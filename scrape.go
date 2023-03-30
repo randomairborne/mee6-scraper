@@ -95,7 +95,7 @@ func main() {
 		time.Sleep(1 * time.Second)
 
 	}
-	fmt.Printf("Have %d users, writing to disk..\n", len(users))
+	fmt.Printf("\nHave %d users, writing to disk..\n", len(users))
 	usersJson, err := json.MarshalIndent(users, "", "\t")
 	report(err)
 	_, err = jout.Write(usersJson)
