@@ -89,7 +89,7 @@ func main() {
 		if finalLevel < levelToScrapeUntil {
 			break
 		}
-		fmt.Printf("\r Current user level: %d (%d total users)", finalLevel, len(users))
+		fmt.Printf("\r Current user level: %d (%d total users, page %d)", finalLevel, len(users), page)
 
 		page = page + 1
 		time.Sleep(1 * time.Second)
