@@ -62,13 +62,13 @@ func main() {
 		defer resp.Body.Close()
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Printf("\nError: %s with response: %s\n", err.Error(), body)
+			fmt.Printf("\nError: %s with response: %s\n", err.Error(), string(body[:]))
 			hadError = true
 			break
 		}
 		err = json.Unmarshal(body, &thisPage)
 		if err != nil {
-			fmt.Printf("\nError: %s with response: %s\n", err.Error(), body)
+			fmt.Printf("\nError: %s with response: %s\n", err.Error(), string(body[:]))
 			hadError = true
 			break
 		}
