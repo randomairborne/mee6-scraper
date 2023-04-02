@@ -127,7 +127,7 @@ type Player struct {
 	Xp            uint64 `json:"xp"`
 	Username      string `json:"username"`
 	Discriminator string `json:"discriminator"`
-        Avatar        string `json:"avatar,omitempty"`
+	Avatar        string `json:"avatar,omitempty"`
 }
 
 type IntPlayer struct {
@@ -136,5 +136,5 @@ type IntPlayer struct {
 	Xp            uint64 `json:"xp"`
 	Username      string `json:"username"`
 	Discriminator string `json:"discriminator"`
-        Avatar        string `json:"avatar,omitempty"`
+	Avatar        string `json:"avatar,omitempty"`
 }
