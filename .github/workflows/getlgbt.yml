@@ -15,7 +15,7 @@ jobs:
         run: echo "NOW=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Run go
-        run: go run . 506636639460655120 5
+        run: go run . 506636639460655120 1
 
       - name: Upload to ValkCDN
         uses: randomairborne/r2-release@main
