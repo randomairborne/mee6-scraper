@@ -43,7 +43,7 @@ func main() {
 	}()
 	for keepGoing {
 		thisPage := new(InputData)
-		resp, err := http.Get(fmt.Sprintf("https://mee6.xyz/api/plugins/levels/leaderboard/%d?page=%d", guildId, page))
+		resp, err := http.Get(fmt.Sprintf("https://mee6.xyz/api/plugins/levels/leaderboard/%d?limit=1000&page=%d", guildId, page))
 		if err != nil {
 			if resp.StatusCode == 429 {
 				dur, err := strconv.Atoi(resp.Header.Get("Retry-After"))
