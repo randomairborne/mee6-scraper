@@ -125,6 +125,7 @@ type Player struct {
 	ID            string `json:"id"`
 	Level         uint64 `json:"level"`
 	Xp            uint64 `json:"xp"`
+	MessageCount  uint64 `json:"message_count,omitempty"`
 	Username      string `json:"username"`
 	Discriminator string `json:"discriminator"`
 	Avatar        string `json:"avatar,omitempty"`
@@ -134,6 +135,7 @@ type IntPlayer struct {
 	ID            uint64 `json:"id"`
 	Level         uint64 `json:"level"`
 	Xp            uint64 `json:"xp"`
+	MessageCount  uint64 `json:"message_count,omitempty"`
 	Username      string `json:"username"`
 	Discriminator string `json:"discriminator"`
 	Avatar        string `json:"avatar,omitempty"`
