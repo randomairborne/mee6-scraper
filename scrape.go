@@ -26,7 +26,7 @@ func main() {
 	}
 	levelToScrapeUntil, err := strconv.ParseUint(os.Args[2], 10, 64)
 	if err != nil {
-		fmt.Println("Server ID must be an int!")
+		fmt.Println("level to scrape until must be an int!")
 		os.Exit(1)
 	}
 	joutName := fmt.Sprintf("./%d-levels.json", guildId)
@@ -41,9 +41,20 @@ func main() {
 		fmt.Println("\nExiting...")
 		keepGoing = false
 	}()
+	auth_token, has_auth := os.LookupEnv("AUTHORIZATION")
+	client := http.Client{}
 	for keepGoing {
 		thisPage := new(InputData)
-		resp, err := http.Get(fmt.Sprintf("https://mee6.xyz/api/plugins/levels/leaderboard/%d?limit=1000&page=%d", guildId, page))
+		req, err := http.NewRequest("GET", fmt.Sprintf("https://mee6.xyz/api/plugins/levels/leaderboard/%d?limit=1000&page=%d", guildId, page), nil)
+		if err != nil {
+			fmt.Printf("\nError: %s\n", err.Error())
+			hadError = true
+			break
+		}
+		if has_auth {
+			req.Header.Add("Authorization", auth_token)
+		}
+		resp, err := client.Do(req)
 		if err != nil {
 			if resp.StatusCode == 429 {
 				dur, err := strconv.Atoi(resp.Header.Get("Retry-After"))
